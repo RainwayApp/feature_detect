@@ -16,8 +16,12 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 /** FeatureDetectPlugin */
-public class FeatureDetectPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
+public class FeatureDetectPlugin(): FlutterPlugin, MethodCallHandler, ActivityAware {
   var activity: Activity? = null
+
+  constructor(activity: Activity): this() {
+    this.activity = activity;
+  }
 
   override fun onDetachedFromActivity() {
     activity = null
@@ -53,8 +57,11 @@ public class FeatureDetectPlugin: FlutterPlugin, MethodCallHandler, ActivityAwar
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
+
       val channel = MethodChannel(registrar.messenger(), "com.rainway/feature_detect")
-      channel.setMethodCallHandler(FeatureDetectPlugin())
+      val plugin = FeatureDetectPlugin()
+      channel.setMethodCallHandler(FeatureDetectPlugin(registrar.activity()))
+      //channel.setMethodCallHandler({call, result -> plugin.onMethodCall(call, result)})
       //channel.setMethodCallHandler { call, result -> onMethodCall(call, result) }
     }
   }
